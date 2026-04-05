@@ -289,7 +289,9 @@ namespace Scripts
                 [ProtoMember(21)] internal bool EvictUniqueTargets;
                 [ProtoMember(22)] internal int CycleTargets;
                 [ProtoMember(23)] internal int CycleBlocks;
-
+                [ProtoMember(24)] internal bool AllowSwitchTargetPriority;
+                [ProtoMember(25)] internal bool AllowFireDistribution;
+                
                 [ProtoContract]
                 public struct CommunicationDef
                 {
