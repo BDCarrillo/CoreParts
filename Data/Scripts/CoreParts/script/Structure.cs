@@ -694,6 +694,7 @@ namespace Scripts
                     [ProtoMember(3)] internal bool OnHitDeath;
                     [ProtoMember(4)] internal int PositionSyncInterval;
                     [ProtoMember(5)] internal int PositionPatchWindow;
+                    [ProtoMember(6)] internal bool PositionUpdateOnRandomize;
                 }
 
                 [ProtoContract]
