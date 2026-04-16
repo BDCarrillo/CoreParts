@@ -692,6 +692,8 @@ namespace Scripts
                     [ProtoMember(1)] internal bool Full;
                     [ProtoMember(2)] internal bool PointDefense;
                     [ProtoMember(3)] internal bool OnHitDeath;
+                    [ProtoMember(4)] internal int PositionSyncInterval;
+                    [ProtoMember(5)] internal int PositionPatchWindow;
                 }
 
                 [ProtoContract]
