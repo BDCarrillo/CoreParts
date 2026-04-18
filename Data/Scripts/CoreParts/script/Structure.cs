@@ -489,6 +489,7 @@ namespace Scripts
                 [ProtoMember(15)] internal bool NpcSafe;
                 [ProtoMember(16)] internal bool ScanTrackOnly;
                 [ProtoMember(17)] internal bool CanTargetSubmerged;
+                [ProtoMember(18)] internal float DeviateShotAngleSGModifier;
 
                 [ProtoContract]
                 public struct LoadingDef
