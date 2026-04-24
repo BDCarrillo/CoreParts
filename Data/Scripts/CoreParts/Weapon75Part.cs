@@ -63,6 +63,9 @@ namespace Scripts {
                 CycleTargets = 0, // Number of targets to check per acquire attempt before giving up for the remainder of the tick and re-rolling any RNG; 0 = unlimited
                 TopBlocks = 8, // Number of potential block targets to randomize, then go in list order; 0 = no randomization, goes in order of internal lists for block subtypes found
                 CycleBlocks = 0, // Number of blocks to check per acquire attempt before giving up for the remainder of the tick and re-rolling any RNG; 0 = unlimited
+                AllowSwitchTargetPriority = false, // If true, the weapon's GUI will have a toggle allowing the player to switch between targeting closest or random (or the equivalent modes for Fire Distribution).
+                AllowFireDistribution = false, // Only for point-defense cannons. If true, the weapon's GUI will have a toggle (and additional sliders) allowing the player to enable the Fire Distribution System for point defense. Server admins: fire distribution is significantly more costly than the previous RNG-based targeting. It is also recommended to set CycleTargets to 0 since the system isn't culling targets aggressively and may fail to acquire targets otherwise.
+                AdvancedFireDistribution = false, // Only for point defense cannons and if AllowFireDistribution is true. If true, the weapon's GUI will have an Angle Cost slider, which will allow players to tweak how certain PDCs retarget, based on their turn rate and other such factors. Server admins: advanced fire distribution is significantly more costly than the normal fire distribution.
                 StopTrackingSpeed = 0, // Do not track projectiles traveling faster than this speed; 0 = unlimited.
                 UniqueTargetPerWeapon = false, // only applies to multi-weapon blocks 
                 MaxTrackingTime = 0, // After this time has been reached the weapon will stop tracking existing target and scan for a new one
