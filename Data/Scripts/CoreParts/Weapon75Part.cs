@@ -11,6 +11,8 @@ using static Scripts.Structure.WeaponDefinition.TargetingDef.CommunicationDef.Se
 using static Scripts.Structure.WeaponDefinition.HardPointDef.HardwareDef;
 using static Scripts.Structure.WeaponDefinition.HardPointDef.HardwareDef.HardwareType;
 using static Scripts.Structure.WeaponDefinition.HardPointDef.LoadingDef;
+using static Scripts.Structure.WeaponDefinition.HardPointDef.UiDef;
+using static Scripts.Structure.WeaponDefinition.ProjectileFlags;
 
 namespace Scripts {   
     partial class Parts {
@@ -45,15 +47,55 @@ namespace Scripts {
             Targeting = new TargetingDef
             {
                 Threats = new[] {
-                    Grids, // Types of threat to engage: Grids, Projectiles, Characters, Meteors, Neutrals, ScanRoid, ScanPlanet, ScanFriendlyCharacter, ScanFriendlyGrid, ScanEnemyCharacter, ScanEnemyGrid, ScanNeutralCharacter, ScanNeutralGrid, ScanUnOwnedGrid, ScanOwnersGrid
+                    Grids, Projectiles // Types of threat to engage: Grids, Projectiles, Characters, Meteors, Neutrals, ScanRoid, ScanPlanet, ScanFriendlyCharacter, ScanFriendlyGrid, ScanEnemyCharacter, ScanEnemyGrid, ScanNeutralCharacter, ScanNeutralGrid, ScanUnOwnedGrid, ScanOwnersGrid
                            // Grids are both LG and SG. Use Hardpoint.Other.ProhibitLGTargeting and Use Hardpoint.Other.ProhibitSGTargeting to further differentiate
                 },
+                // ProjectileThreats you to further specify what Projectiles to target if Projectiles is listed above.
+                // This allows you to fine tune what your PDC will fire at, be it Dumb only, Smart only, or more specifically Explosive Smart projectiles, or Smarts that IgnoreAntiSmarts
+                // This also comes with custom flags that are only set in ammo definitions
+                // This is NOT a priority system, items higher on the list are not prioritized whatosever!
+                // Note: this depreciates the IgnoreDumbProjectiles setting, if you want that back then put it in the array as seen at the bottom.
+                // Note: This operates on an OR system by default (RequireExactProjectileThreats = true changes this to an AND system), ie. if you list both IsDumb and IsSmart, then it will basically target any projectile.
+                // Note: Atleast one value is needed or this fails to compile.
+                ProjectileThreats = new[] {
+                    IsDumb, // - Automatically set if the projectile guidance is None
+                    IsSmart, // - Automatically set if the projectile guidance is Smart
+                    IsDrone, // - Automatically set if the projectile guidance is DroneAdvanced
+                    IsMine, // - Automatically set if the projectile is one of the Mine guidance types
+                    IsTravelTo, // - Automatically set if the projectile guidance is TravelTo
+
+                    NoEwar, // Set if Ewar.Enable = false
+                    EwarEffect, // Set if Ewar.Enable = true and Ewar.Mode = Effect
+                    EwarField, // Set if Ewar.Enable = true and Ewar.Mode = Field
+                    Ewar, // Equivalent to writing `EwarEffect, EwarField,`
+
+                    NonExplosive, // Set if ByBlockHit.Enable = false and EndOfLife.Enable = false
+                    BBHExplosive, // Set if ByBlockHit.Enable = true
+                    EOLExplosive, // Set if EndOfLife.Enable = true
+                    Explosive, // Equivalent to writing `BBHExplosive, EOLExplosive,`
+
+                    NoFragments, // Set if the ammo def does not have a fragment defined
+                    HasFragments, // Set if the ammo def has a fragment defined
+
+                    AffectedByAntiSmarts, // Set if IsSmart = true and Trajectory.Smarts.IgnoreAntiSmarts = true
+                    IgnoresAntiSmarts, //  Set if IsSmart = true and Trajectory.Smarts.IgnoreAntiSmarts = false
+
+                    // Custom flags are flags set manually in AmmoDef.ProjectileFlagsOverride, and can be used to further specify things
+                    // Ie. using Custom01 for cannons, Custom02 for railguns, Custom03 for rockets, etc.
+                    // These can be somewhat wonky between differing modpacks, so recommend for server admins only really
+                    Custom01, Custom02, //... Custom## ... Custom20
+                    //AllCustom, // can be used in place of writing all 20 custom flags if you want all of them set for some reason
+
+                    All, // Equivalent to writing out every flag on the list (and invalid bits)
+                    
+                    //IgnoreDumbProjectiles // Equivalent to the old IgnoreDumbProjectiles setting
+                },
+                RequireAllProjectileThreats = false, // If true, only engages projectiles that have atleast all flags specified above. If false, engages any projectile that has at least one of the specified flags.
                 SubSystems = new[] {
                     Thrust, Utility, Offense, Power, Production, Any, // Subsystem targeting priority: Offense, Utility, Power, Production, Thrust, Jumping, Steering, Any
                                                                       // Order matters! With the current setting weapons will target Thrust first, then Utility, then Offense, etc.
                 },
                 ClosestFirst = true, // Tries to pick closest targets first (blocks on grids, projectiles, etc...).
-                IgnoreDumbProjectiles = false, // Don't fire at non-smart projectiles.
                 LockedSmartOnly = false, // Only fire at smart projectiles that are locked on to parent grid.
                 MinimumDiameter = 0, // Minimum diameter of threat to engage.
                 MaximumDiameter = 0, // Maximum diameter of threat to engage; 0 = unlimited.
@@ -113,6 +155,76 @@ namespace Scripts {
                     DisableSupportingPD = false, // If true, the supporting point defense terminal option will be removed and this weapon will only target projectiles targeting the construct it's placed on
                     ProhibitShotDelay = false, // If true, removes shot delay options for players.  This may be desirable for weapons that use heat or bursts as a balance mechanic and deliberately do not offer the ROF slider.
                     ProhibitBurstCount = false, // If true, removes burst shot count options for players.
+                    UiFlagsToggle = new ProjectileFlagsToggleDef
+                    {
+                        // Enabling this allows users to toggle projectile flags listed here.
+                        // User flags will take priority if they are set here with the above list in Targeting serving as defaults.
+                        // Ie. If IsDumb is listed in Targeting and here the user can toggle it on and off, and will default on
+                        //     If IsDumb is NOT listed in Targeting and here the user can toggle it on and off, and will default off
+                        //     If IsDumb is listed in Targeting and NOT here then it will be forced on
+                        Enable = false,
+
+                        // ProjectileThreats you to further specify what Projectiles to target if Projectiles is listed above.
+                        // This allows you to fine tune what your PDC will fire at, be it Dumb only, Smart only, or more specifically Explosive Smart projectiles, or Smarts that IgnoreAntiSmarts
+                        // This also comes with custom flags that are only set in ammo definitions
+                        // This is NOT a priority system, items higher on the list are not prioritized whatosever!
+                        // Listed ones will default true regardless of what is listed above
+                        ProjectileThreatToggles = new[] {
+                            IsDumb, // - Automatically set if the projectile guidance is None
+                            IsSmart, // - Automatically set if the projectile guidance is Smart
+                            IsDrone, // - Automatically set if the projectile guidance is DroneAdvanced
+                            IsMine, // - Automatically set if the projectile is one of the Mine guidance types
+                            IsTravelTo, // - Automatically set if the projectile guidance is TravelTo
+
+                            //NoEwar, // Set if Ewar.Enable = false
+                            //EwarEffect, // Set if Ewar.Enable = true and Ewar.Mode = Effect
+                            //EwarField, // Set if Ewar.Enable = true and Ewar.Mode = Field
+                            //Ewar, // Equivalent to writing `EwarEffect, EwarField,`
+
+                            //NonExplosive, // Set if ByBlockHit.Enable = false and EndOfLife.Enable = false
+                            //BBHExplosive, // Set if ByBlockHit.Enable = true
+                            //EOLExplosive, // Set if EndOfLife.Enable = true
+                            //Explosive, // Equivalent to writing `BBHExplosive, EOLExplosive,`
+
+                            //NoFragments, // Set if the ammo def does not have a fragment defined
+                            //HasFragments, // Set if the ammo def has a fragment defined
+
+                            //AffectedByAntiSmarts, // Set if IsSmart = true and Trajectory.Smarts.IgnoreAntiSmarts = true
+                            //IgnoresAntiSmarts, //  Set if IsSmart = true and Trajectory.Smarts.IgnoreAntiSmarts = false
+
+                            // Custom flags are flags set manually in AmmoDef.ProjectileFlagsOverride, and can be used to further specify things
+                            // Ie. using Custom01 for cannons, Custom02 for railguns, Custom03 for rockets, etc.
+                            // Note that these flags on projectiles can change meaning from mod to mod! Recommended for server admins only, or if enough people decide what each flag is
+                            Custom01, Custom02, //... Custom## ... Custom20
+                            //AllCustom, // can be used in place of writing all 20 custom flags if you want all of them set for some reason
+
+                            //All, // Do not put here even if its technically a valid option, as it will set unused bits which WILL show up in the UI
+                        },
+                        RequireAllProjectileThreatsToggle = false, // Allow the user to toggle RequireAllProjectileThreats, and will default off regardless of what is listed above if true
+
+                        // Custom display names for the Custom01-Custom20 flags in the UI. Note that these flags on projectiles can change meaning from mod to mod!
+                        Custom01DisplayName = "",
+                        Custom02DisplayName = "",
+                        Custom03DisplayName = "",
+                        Custom04DisplayName = "",
+                        Custom05DisplayName = "",
+                        Custom06DisplayName = "",
+                        Custom07DisplayName = "",
+                        Custom08DisplayName = "",
+                        Custom09DisplayName = "",
+                        Custom10DisplayName = "",
+                        Custom11DisplayName = "",
+                        Custom12DisplayName = "",
+                        Custom13DisplayName = "",
+                        Custom14DisplayName = "",
+                        Custom15DisplayName = "",
+                        Custom16DisplayName = "",
+                        Custom17DisplayName = "",
+                        Custom18DisplayName = "",
+                        Custom19DisplayName = "",
+                        Custom20DisplayName = "",
+
+                    }
                 },
                 Ai = new AiDef
                 {
