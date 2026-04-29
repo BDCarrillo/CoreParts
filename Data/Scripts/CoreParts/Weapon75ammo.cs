@@ -70,42 +70,6 @@ namespace Scripts
                                   // It should be noted that this does NOT subtract the heat, use AmmoDef.AllowNegativeHeatModifier to subtract the desired amount.
             NpcSafe = false, // This is you tell npc moders that your ammo was designed with them in mind, if they tell you otherwise set this to false.
             NoGridOrArmorScaling = true, // If you enable this you can remove the damagescale section entirely.
-
-            // Thes are the "flags" that PDCs use to filter what projectiles they can shoot down (listed in Targeting.ProjectileThreats)
-            // This is where you set the Custom## flags used there for more filtering
-            // Alternatively, you can force enable the automatically set flags by listing them here, ie. labeling a Smart with approaches meant to be a drone as IsDrone
-            // You cannot forcefully disable flags
-            ProjectileFlagsOverride = new ProjectileFlags[]
-            {
-                Invalid,
-                //Custom01, Custom02, //... custom## ... Custom20
-                //AllCustom, // can be used in place of writing all 20 custom flags if you want all of them set for some reason
-
-                // other values that you can override here:
-                //IsDumb, // - Automatically set if the projectile guidance is None
-                //IsSmart, // - Automatically set if the projectile guidance is Smart
-                //IsDrone, // - Automatically set if the projectile guidance is DroneAdvanced
-                //IsMine, // - Automatically set if the projectile is one of the Mine guidance types
-                //IsTravelTo, // - Automatically set if the projectile guidance is TravelTo
-
-                //NoEwar, // - Automatically set if Ewar.Enable = false
-                //EwarEffect, // - Automatically set if Ewar.Enable = true and Ewar.Mode = Effect
-                //EwarField, // - Automatically set if Ewar.Enable = true and Ewar.Mode = Field
-                //Ewar, // - Equivalent to writing `EwarEffect, EwarField,`
-
-                //NonExplosive, // - Automatically set if ByBlockHit.Enable = false and EndOfLife.Enable = false
-                //BBHExplosive, // - Automatically set if ByBlockHit.Enable = true
-                //EOLExplosive, // - Automatically set if EndOfLife.Enable = true
-                //Explosive, // - Equivalent to writing `BBHExplosive, EOLExplosive,`
-
-                //NoFragments, // - Automatically set if the ammo def does not have a fragment defined
-                //HasFragments, // - Automatically set if the ammo def has a fragment defined
-
-                //AffectedByAntiSmarts, // - Automatically set if IsSmart = true and Trajectory.Smarts.IgnoreAntiSmarts = true
-                //IgnoresAntiSmarts, // - Automatically set if IsSmart = true and Trajectory.Smarts.IgnoreAntiSmarts = false
-
-                //All, // - Equivalent to writing out every flag on the list (and unused bits). Really not recommended
-            },
             Sync = new SynchronizeDef
             {
                 Full = false, // Use only on PD-killable (guided) projectiles that need to be replicated precisely on the client. It increases network traffic. When the projectile is fired (according to local game states), the clients don't locally spawn it, and instead, the server sends spawn packets to all clients, which spawns it exactly where the server spawned it. This also attaches a network identity to the projectile, allowing further replication, which you can control below.

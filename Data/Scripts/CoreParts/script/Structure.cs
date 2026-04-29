@@ -16,6 +16,29 @@ namespace Scripts
             [ProtoMember(2)] internal ArmorDefinition[] ArmorDefs;
             [ProtoMember(3)] internal UpgradeDefinition[] UpgradeDefs;
             [ProtoMember(4)] internal SupportDefinition[] SupportDefs;
+            [ProtoMember(5)] internal ProjectileTagDefinition[] ProjectileTags;
+            [ProtoMember(6)] internal ProjectileTagAssignment[] TagAssigmnents;
+        }
+
+        [ProtoContract]
+        public class ProjectileTagDefinition
+        {
+            [ProtoMember(1)] internal Tag Namespace;
+            [ProtoMember(2)] internal int DefinitionPriority;
+            [ProtoMember(3)] internal Tag[] Tags;
+
+            [ProtoContract]
+            public struct Tag
+            {
+                [ProtoMember(1)] internal string ID;
+                [ProtoMember(2)] internal string PublicName;
+            }
+        }
+        [ProtoContract]
+        public class ProjectileTagAssignment
+        {
+            [ProtoMember(1)] internal string Tag;
+            [ProtoMember(2)] internal string[] ProjectileAmmoNames;
         }
 
         [ProtoContract]
@@ -59,7 +82,7 @@ namespace Scripts
                 [ProtoMember(2)] internal HardwareDef HardWare;
                 [ProtoMember(3)] internal UiDef Ui;
                 [ProtoMember(4)] internal OtherDef Other;
-
+                [ProtoMember(5)] internal int DefinitionPriority;
 
                 [ProtoContract]
                 public struct UiDef
@@ -79,6 +102,7 @@ namespace Scripts
                     [ProtoMember(2)] internal HardwareType Type;
                     [ProtoMember(3)] internal int BlockDistance;
                     [ProtoMember(4)] internal float IdlePower;
+
                 }
 
                 [ProtoContract]
@@ -93,7 +117,6 @@ namespace Scripts
                     [ProtoMember(7)] internal bool StayCharged;
                 }
             }
-
         }
 
         [ProtoContract]
@@ -126,6 +149,7 @@ namespace Scripts
                 [ProtoMember(2)] internal HardwareDef HardWare;
                 [ProtoMember(3)] internal UiDef Ui;
                 [ProtoMember(4)] internal OtherDef Other;
+                [ProtoMember(5)] internal int DefinitionPriority;
 
                 [ProtoContract]
                 public struct UiDef
@@ -201,6 +225,7 @@ namespace Scripts
             [ProtoMember(2)] internal ArmorType Kind;
             [ProtoMember(3)] internal double KineticResistance;
             [ProtoMember(4)] internal double EnergeticResistance;
+            [ProtoMember(5)] internal int DefinitionPriority;
         }
 
         [ProtoContract]
@@ -213,132 +238,6 @@ namespace Scripts
             [ProtoMember(5)] internal AmmoDef[] Ammos;
             [ProtoMember(6)] internal string ModPath;
             [ProtoMember(7)] internal Dictionary<string, UpgradeValues[]> Upgrades;
-
-            [Flags]
-            [Serializable]
-            public enum ProjectileFlags : ulong
-            {
-                /// <summary>
-                /// By default set to All on weapons, ammo defs are set based on stats below if a definition is recieved with this for backwards compat.
-                /// </summary>
-                Invalid = 0,
-
-                /// <summary>
-                /// Custom flags for modders
-                /// </summary>
-                Custom01 = 1uL << 0,
-                Custom02 = 1uL << 1,
-                Custom03 = 1uL << 2,
-                Custom04 = 1uL << 3,
-                Custom05 = 1uL << 4,
-                Custom06 = 1uL << 5,
-                Custom07 = 1uL << 6,
-                Custom08 = 1uL << 7,
-                Custom09 = 1uL << 8,
-                Custom10 = 1uL << 9,
-                Custom11 = 1uL << 10,
-                Custom12 = 1uL << 11,
-                Custom13 = 1uL << 12,
-                Custom14 = 1uL << 13,
-                Custom15 = 1uL << 14,
-                Custom16 = 1uL << 15,
-                Custom17 = 1uL << 16,
-                Custom18 = 1uL << 17,
-                Custom19 = 1uL << 18,
-                Custom20 = 1uL << 19,
-
-                /// <summary>
-                /// Automatically set if the projectile guidance is not, Smart, Drone, or Mine (aka either None or TravelTo)
-                /// </summary>
-                IsDumb = 1uL << 20,
-                /// <summary>
-                /// Automatically set if the projectile guidance is Smart
-                /// </summary>
-                IsSmart = 1uL << 21,
-                /// <summary>
-                /// Automatically set if the projectile guidance is DroneAdvanced
-                /// </summary>
-                IsDrone = 1uL << 22,
-                /// <summary>
-                /// Automatically set if the projectile guidance is a Mine
-                /// </summary>
-                IsMine = 1uL << 23,
-                /// <summary>
-                /// // Automatically set if the projectile is TravelTo
-                /// </summary>
-                IsTravelTo = 1uL << 24,
-                /// <summary>
-                /// value for backwards compat when IgnoreDumbProjectiles = true
-                /// </summary>
-                IgnoreDumbProjectiles = IsSmart | IsDrone,
-
-                /// <summary>
-                /// Automatically set if Ewar.Enable = false
-                /// </summary>
-                NoEwar = 1uL << 25,
-                /// <summary>
-                /// Automatically set if Ewar.Enable = true and Ewar.Mode = Effect
-                /// </summary>
-                EwarEffect = 1uL << 26,
-                /// <summary>
-                /// Automatically set if Ewar.Enable = true and Ewar.Mode = Field
-                /// </summary>
-                EwarField = 1uL << 27,
-                /// <summary>
-                /// Value representing Ewar.Enable = true
-                /// </summary>
-                Ewar = EwarEffect | EwarField,
-
-                /// <summary>
-                /// Automatically set if ByBlockHit.Enable = false and EndOfLife.Enable = false
-                /// </summary>
-                NonExplosive = 1uL << 28,
-                /// <summary>
-                /// Automatically set if ByBlockHit.Enable = true
-                /// </summary>
-                BBHExplosive = 1uL << 29,
-                /// <summary>
-                /// Automatically set if EndOfLife.Enable = true
-                /// </summary>
-                EOLExplosive = 1uL << 30,
-                /// <summary>
-                /// Value representing ByBlockHit.Enable = true or EndOfLife.Enable = true
-                /// </summary>
-                Explosive = BBHExplosive | EOLExplosive,
-
-                /// <summary>
-                /// Automatically set if the ammo def does not have a fragment defined
-                /// </summary>
-                NoFragments = 1uL << 31,
-                /// <summary>
-                /// Automatically set if the ammo def has a fragment defined
-                /// </summary>
-                HasFragments = 1uL << 32,
-
-                /// <summary>
-                /// Automatically set if IsSmart = true and Trajectory.Smarts.IgnoreAntiSmarts = false
-                /// </summary>
-                IgnoresAntiSmarts = 1uL << 33,
-                /// <summary>
-                /// Automatically set if IsSmart = true and Trajectory.Smarts.IgnoreAntiSmarts = true
-                /// </summary>
-                AffectedByAntiSmarts = 1uL << 34,
-
-                // room for more if needed
-                // note that bit order matters for UI - larger values will be listed lower
-                // because of this adding more Custom variables is difficult if you want them to be grouped with the other Custom variables
-
-                /// <summary>
-                /// All ones
-                /// </summary>
-                All = ~Invalid,
-
-                /// <summary>
-                /// Value representing any of the custom flags
-                /// </summary>
-                AllCustom = Custom01 | Custom02 | Custom03 | Custom04 | Custom05 | Custom06 | Custom07 | Custom08 | Custom09 | Custom10 |
-                            Custom11 | Custom12 | Custom13 | Custom14 | Custom15 | Custom16 | Custom17 | Custom18 | Custom19 | Custom20,
-            }
 
             [ProtoContract]
             public struct ModelAssignmentsDef
@@ -382,7 +281,7 @@ namespace Scripts
                     ScanEnemyGrid,
                     ScanNeutralCharacter,
                     ScanUnOwnedGrid,
-                    ScanOwnersGrid
+                    ScanOwnersGrid,
                 }
 
                 public enum BlockTypes
@@ -395,6 +294,13 @@ namespace Scripts
                     Thrust,
                     Jumping,
                     Steering
+                }
+
+                public enum WhitelistSystem
+                {
+                    Blacklist,
+                    WhitelistOr,
+                    WhitelistAnd,
                 }
 
                 [ProtoMember(1)] internal int TopTargets;
@@ -412,6 +318,9 @@ namespace Scripts
                 [ProtoMember(13)] internal bool UniqueTargetPerWeapon;
                 [ProtoMember(14)] internal int MaxTrackingTime;
                 [ProtoMember(15)] internal bool ShootBlanks;
+                //[ProtoMember(16)] internal bool ExportTargets;
+                //[ProtoMember(17)] internal string ChannelId;
+                //[ProtoMember(18)] internal int ExportLimit;
                 [ProtoMember(19)] internal CommunicationDef Communications;
                 [ProtoMember(20)] internal bool FocusOnly;
                 [ProtoMember(21)] internal bool EvictUniqueTargets;
@@ -420,28 +329,8 @@ namespace Scripts
                 [ProtoMember(24)] internal bool AllowSwitchTargetPriority;
                 [ProtoMember(25)] internal bool AllowFireDistribution;
                 [ProtoMember(26)] internal bool AdvancedFireDistribution;
-                [ProtoMember(27)] internal ulong ProjectileThreatsInternal; // ulong is needed or ProtoBuf throws a fit :(
-                [ProtoIgnore]
-                internal ProjectileFlags[] ProjectileThreats
-                {
-                    set
-                    {
-                        ProjectileThreatsInternal = (ulong)ProjectileFlags.Invalid;
-                        foreach (var flag in value)
-                        {
-                            if (flag == ProjectileFlags.Invalid)
-                            {
-                                ProjectileThreatsInternal = (ulong)ProjectileFlags.Invalid;
-                                return;
-                            }
-
-                            ProjectileThreatsInternal |= (ulong)flag;
-                        }
-                    }
-                }
-                [ProtoMember(28)] internal bool RequireAllProjectileThreats;
-
-                
+                [ProtoMember(27)] internal string[] ProjectileTagsList;
+                [ProtoMember(28)] internal WhitelistSystem ProjectileTagsMeaning;
 
                 [ProtoContract]
                 public struct CommunicationDef
@@ -476,6 +365,7 @@ namespace Scripts
                     [ProtoMember(11)] internal bool TargetPersists;
                     [ProtoMember(12)] internal bool StoreLimitPerBlock;
                     [ProtoMember(13)] internal int MaxConnections;
+
                 }
             }
 
@@ -535,6 +425,7 @@ namespace Scripts
                     [ProtoMember(8)] internal EventTriggers[] TriggerOnce;
                     [ProtoMember(9)] internal EventTriggers[] ResetEmissives;
                     [ProtoMember(10)] internal ResetConditions Resets;
+
                 }
 
                 [ProtoContract]
@@ -638,8 +529,9 @@ namespace Scripts
                 [ProtoMember(14)] internal bool CanShootSubmerged;
                 [ProtoMember(15)] internal bool NpcSafe;
                 [ProtoMember(16)] internal bool ScanTrackOnly;
-                [ProtoMember(17)] internal bool CanTargetSubmerged; 
+                [ProtoMember(17)] internal bool CanTargetSubmerged;
                 [ProtoMember(18)] internal float DeviateShotAngleSGModifier;
+                [ProtoMember(19)] internal int DefinitionPriority;
 
                 [ProtoContract]
                 public struct LoadingDef
@@ -683,6 +575,9 @@ namespace Scripts
                         [ProtoMember(2)] internal float HeatThresholdEnd;
                         [ProtoMember(3)] internal float RofAt0Heat;
                         [ProtoMember(4)] internal float RofAt100Heat;
+
+                        // if DegradeRof is active (heat went above HeatThresholdStart and has not went below HeatThresholdEnd,
+                        // then lerp between RofAt0Heat and RofAt100Heat using heat percentage.
                     }
                 }
 
@@ -700,54 +595,14 @@ namespace Scripts
                     [ProtoMember(8)] internal bool DisableSupportingPD;
                     [ProtoMember(9)] internal bool ProhibitShotDelay;
                     [ProtoMember(10)] internal bool ProhibitBurstCount;
-                    [ProtoMember(11)] internal ProjectileFlagsToggleDef UiFlagsToggle;
+                    [ProtoMember(11)] internal UiSetTagsDef UiSetTags;
 
                     [ProtoContract]
-                    public struct ProjectileFlagsToggleDef
+                    public struct UiSetTagsDef
                     {
                         [ProtoMember(1)] internal bool Enable;
-                        [ProtoMember(2)] internal ulong ProjectileThreatsTogglesInternal; // ulong is needed or ProtoBuf throws a fit :(
-                        [ProtoIgnore]
-                        internal ProjectileFlags[] ProjectileThreatToggles
-                        {
-                            set
-                            {
-                                ProjectileThreatsTogglesInternal = (ulong)ProjectileFlags.Invalid;
-                                foreach (var flag in value)
-                                {
-                                    if (flag == ProjectileFlags.Invalid)
-                                    {
-                                        ProjectileThreatsTogglesInternal = (ulong)ProjectileFlags.Invalid;
-                                        return;
-                                    }
-
-                                    ProjectileThreatsTogglesInternal |= (ulong)flag;
-                                }
-                            }
-                        }
-
-                        [ProtoMember(3)] internal string Custom01DisplayName;
-                        [ProtoMember(4)] internal string Custom02DisplayName;
-                        [ProtoMember(5)] internal string Custom03DisplayName;
-                        [ProtoMember(6)] internal string Custom04DisplayName;
-                        [ProtoMember(7)] internal string Custom05DisplayName;
-                        [ProtoMember(8)] internal string Custom06DisplayName;
-                        [ProtoMember(9)] internal string Custom07DisplayName;
-                        [ProtoMember(10)] internal string Custom08DisplayName;
-                        [ProtoMember(11)] internal string Custom09DisplayName;
-                        [ProtoMember(12)] internal string Custom10DisplayName;
-                        [ProtoMember(13)] internal string Custom11DisplayName;
-                        [ProtoMember(14)] internal string Custom12DisplayName;
-                        [ProtoMember(15)] internal string Custom13DisplayName;
-                        [ProtoMember(16)] internal string Custom14DisplayName;
-                        [ProtoMember(17)] internal string Custom15DisplayName;
-                        [ProtoMember(18)] internal string Custom16DisplayName;
-                        [ProtoMember(19)] internal string Custom17DisplayName;
-                        [ProtoMember(20)] internal string Custom18DisplayName;
-                        [ProtoMember(21)] internal string Custom19DisplayName;
-                        [ProtoMember(22)] internal string Custom20DisplayName;
-
-                        [ProtoMember(23)] internal bool RequireAllProjectileThreatsToggle;
+                        [ProtoMember(2)] internal string[] ProjectileTagsList;
+                        [ProtoMember(3)] internal bool AllowUserWhitelistChange;
                     }
                 }
 
@@ -885,25 +740,7 @@ namespace Scripts
                 [ProtoMember(34)] internal bool IgnoreGrids;
                 [ProtoMember(35)] internal bool AllowNegativeHeatModifier;
                 [ProtoMember(36)] internal int HeatNeededToFire;
-                [ProtoMember(37)] internal ulong ProjectileFlagsInternal; // ulong is needed or ProtoBuf throws a fit :(
-                [ProtoIgnore]
-                internal ProjectileFlags[] ProjectileFlagsOverride
-                {
-                    set
-                    {
-                        ProjectileFlagsInternal = (ulong)ProjectileFlags.Invalid;
-                        foreach (var flag in value)
-                        {
-                            if (flag == ProjectileFlags.Invalid)
-                            {
-                                ProjectileFlagsInternal = (ulong)ProjectileFlags.Invalid;
-                                return;
-                            }
 
-                            ProjectileFlagsInternal |= (ulong)flag;
-                        }
-                    }
-                }
 
                 [ProtoContract]
                 public struct SynchronizeDef
@@ -979,7 +816,6 @@ namespace Scripts
                         {
                             Energy,
                             Kinetic,
-                            ShieldDefault,
                         }
 
                         [ProtoMember(1)] internal Damage Base;
@@ -1097,7 +933,6 @@ namespace Scripts
                         [ProtoMember(6)] internal OffsetEffectDef OffsetEffect;
                         [ProtoMember(7)] internal bool DropParentVelocity;
 
-
                         [ProtoContract]
                         public struct OffsetEffectDef
                         {
@@ -1199,7 +1034,7 @@ namespace Scripts
                     [ProtoMember(9)] internal float Offset;
                     [ProtoMember(10)] internal int MaxChildren;
                     [ProtoMember(11)] internal TimedSpawnDef TimedSpawns;
-                    [ProtoMember(12)] internal bool FireSound; // not used, can remove
+                    [ProtoMember(12)] internal bool FireSound; // not used can remove
                     [ProtoMember(13)] internal Vector3D AdvOffset;
                     [ProtoMember(14)] internal bool ArmWhenHit;
                     [ProtoMember(15)] internal Vector2D AdvRotationOffset;
@@ -1267,6 +1102,7 @@ namespace Scripts
                     [ProtoMember(7)] internal Vector3D Rotation;
                     [ProtoMember(8)] internal Randomize RotationVariance;
 
+
                     [ProtoContract]
                     public struct ComponentDef
                     {
@@ -1290,6 +1126,7 @@ namespace Scripts
                         Pooled,
                         Exponential,
                     }
+
                     public enum AoeShape
                     {
                         Round,
@@ -1309,6 +1146,7 @@ namespace Scripts
                         [ProtoMember(5)] internal float MaxAbsorb;
                         [ProtoMember(6)] internal Falloff Falloff;
                         [ProtoMember(7)] internal AoeShape Shape;
+
                     }
 
                     [ProtoContract]
@@ -1347,7 +1185,7 @@ namespace Scripts
                         Push,
                         Pull,
                         Tractor,
-                        AntiSmartv2
+                        AntiSmartv2,
                     }
 
                     public enum EwarMode
@@ -1555,7 +1393,7 @@ namespace Scripts
                     [ProtoMember(14)] internal uint MaxTrajectoryTime;
                     [ProtoMember(15)] internal ApproachDef[] Approaches;
                     [ProtoMember(16)] internal double TotalAcceleration;
-                    [ProtoMember(17)] internal OnHitDef OnHit; // Deprecated
+                    [ProtoMember(17)] internal OnHitDef OnHit; //Deprecated
                     [ProtoMember(18)] internal float DragPerSecond;
                     [ProtoMember(19)] internal float DragMinSpeed;
 
