@@ -55,7 +55,7 @@ namespace Scripts {
                 // This allows you to fine tune what your PDC will fire at.
                 // This is NOT a priority system, items higher on the list are not prioritized whatosever!
                 // Note: Atleast one value is needed or this fails to compile. The defaults are not really used.
-                // Note: Consider this an extension (and depreciation) of IgnoreDumbProjectiles. If you want to emulate IgnoreDumbProjectiles behavior, add the tags "wc:smart" and "wc:drone" to the list and set ProjectileTagsMeaning to Whitelist
+                // Note: Consider this an extension (and depreciation) of IgnoreDumbProjectiles. If you want to emulate IgnoreDumbProjectiles behavior w/ more tags, add the tags "wc:smart" and "wc:drone" to the list and set ProjectileTagsMeaning to Whitelist
                 ProjectileTagsList = new[]
                 {
                     "namespace1:tag1",
@@ -71,16 +71,18 @@ namespace Scripts {
                     //"wc:travelto", // set if GuidanceType == TravelTo
                 },
                 // This sets what ProjectileTagsList is interpeted as. Values:
-                // Blacklist - this weapon will NOT fire at any projectile if it has atleast one of the above tags
+                // BlacklistOr - this weapon will NOT fire at any projectile if it has atleast one of the above tags
+                // BlacklistAnd - this weapon will NOT fire at any projectile if it has ALL of the above flags
                 // WhitelistOr - this weapon will ONLY fire at a projectile if it has atleast one of the above tags
-                // WhitelistAnd - this weapon will ONLY fire at a projectile if it has ALL pf the above tags
+                // WhitelistAnd - this weapon will ONLY fire at a projectile if it has ALL of the above tags
                 // If you don't want to use this system, leave it on Blacklist!
-                ProjectileTagsMeaning = Blacklist,
+                ProjectileTagsMeaning = BlacklistOr,
                 SubSystems = new[] {
                     Thrust, Utility, Offense, Power, Production, Any, // Subsystem targeting priority: Offense, Utility, Power, Production, Thrust, Jumping, Steering, Any
                                                                       // Order matters! With the current setting weapons will target Thrust first, then Utility, then Offense, etc.
                 },
                 ClosestFirst = true, // Tries to pick closest targets first (blocks on grids, projectiles, etc...).
+                IgnoreDumbProjectiles = false,  // Don't fire at non-smart projectiles. If you're using projectile tags, ensure this is set to false as this overwrites the newer system
                 LockedSmartOnly = false, // Only fire at smart projectiles that are locked on to parent grid.
                 MinimumDiameter = 0, // Minimum diameter of threat to engage.
                 MaximumDiameter = 0, // Maximum diameter of threat to engage; 0 = unlimited.
@@ -169,6 +171,9 @@ namespace Scripts {
                             //"wc:mine", // set if GuidanceType is any of the mine types
                             //"wc:travelto", // set if GuidanceType == TravelTo
                         },
+                        // If false, then the above list will be the only tags the user can determine. If true, then the user can determine every tag BUT the ones listed above
+                        ListIsBlacklist = false,
+
                         // This allows the user to set what ProjectileTagsList is interpeted as if true. Atm you cannot remove options from the list (Blacklist, WhitelistOr, WhitelistAnd)
                         AllowUserWhitelistChange = false,
                     }

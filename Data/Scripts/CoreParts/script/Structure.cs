@@ -298,7 +298,8 @@ namespace Scripts
 
                 public enum WhitelistSystem
                 {
-                    Blacklist,
+                    BlacklistOr,
+                    BlacklistAnd,
                     WhitelistOr,
                     WhitelistAnd,
                 }
@@ -602,7 +603,8 @@ namespace Scripts
                     {
                         [ProtoMember(1)] internal bool Enable;
                         [ProtoMember(2)] internal string[] ProjectileTagsList;
-                        [ProtoMember(3)] internal bool AllowUserWhitelistChange;
+                        [ProtoMember(3)] internal bool ListIsBlacklist;
+                        [ProtoMember(4)] internal bool AllowUserWhitelistChange;
                     }
                 }
 
