@@ -298,10 +298,10 @@ namespace Scripts
 
                 public enum WhitelistSystem
                 {
-                    BlacklistOr,
-                    BlacklistAnd,
-                    WhitelistOr,
-                    WhitelistAnd,
+                    BlacklistOr = 0,
+                    BlacklistAnd = 1,
+                    WhitelistOr = 2,
+                    WhitelistAnd = 3,
                 }
 
                 [ProtoMember(1)] internal int TopTargets;
