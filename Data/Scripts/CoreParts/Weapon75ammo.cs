@@ -866,7 +866,6 @@ namespace Scripts
                                                                     // Distance from P0-P1 will be the maximum length drawn, and for the dot product the line direction will be normalized for the dot product as well.
                                                                     // This will also scale width accordingly
                             AccelAccountForGrav = false, // If true, then the acceleration vector will be as if the projectile was also countering gravity.
-                                                         
                             AccelerationSizeMultiplier = 1f, // This multiplies acceleration length accordingly. This value MUST be nonzero
                             // All of these acceleration settings are designed to be used for thrusters on drones/missiles if you couldn't tell
 
@@ -910,10 +909,10 @@ namespace Scripts
                             AlwaysDraw = false,  // If true, prevents this tracer from being culled. Only use if you have a reason too (very individual lines)! Position used to test is midpoint of each segment.
                                                  // If you're using this because `DelayBetweenSpawns` is large, reduce `DelayBetweenSpawns` over setting this to true.
                             
-                            MinViewDistance = 0f, // If greater than zero, then the current trail line will not be scheduled, if the distance between the current camera position and the PROJECTILE position is less than this
-                            MaxViewDistance = 0f, // If greater than zero, then the  current trail line will not be scheduled, if the distance between the current camera position and the PROJECTILE position is greater than this
-                            // Scheduling to be drawn means that the line will be processed as if it were to be drawn. If its not scheduled then it will never appear
-                            // (ie. if a TimeRendered = 120 line isn't scheduled then it will never appear. If it is just offscreen culled then looking back will be as if it was always there)
+                            MinViewDistance = 0f, // If greater than zero, then the current trail line will not be spawned, if the distance between the current camera position and the PROJECTILE position is less than this
+                            MaxViewDistance = 0f, // If greater than zero, then the  current trail line will not be spawned, if the distance between the current camera position and the PROJECTILE position is greater than this
+                            // Spawning means that the line will be processed as if it were to be drawn. If its not spawned then it will never appear
+                            // (ie. if a TimeRendered = 120 line isn't spawned then it will never appear. If it is just offscreen culled then looking back will be as if it was always there)
                             // You can use these to make a crude LOD system
                             DelayBetweenSpawns = 1, // Number of ticks between a new line being drawn. 0 means every tick, 1 means every other, etc.
                                                     // When a new line is not being drawn, the previous trail line will be extended to the new projectile position
