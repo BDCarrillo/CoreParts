@@ -1041,12 +1041,13 @@ namespace Scripts
                             [ProtoMember(15)] public float MinViewDistance;
                             [ProtoMember(16)] public float MaxViewDistance;
                             [ProtoMember(17)] public float AccelerationSizeMultiplier;
-                            [ProtoMember(18)] public BlendTypeEnum BlendType;
+                            [ProtoMember(18)] public VRageRender.MyBillboard.BlendTypeEnum BlendType;
                             [ProtoMember(19)] public LineDef.FactionColor FactionColor;
                             [ProtoMember(20)] public string[] Materials;
                             [ProtoMember(21)] public Vector3 P0;
                             [ProtoMember(22)] public Vector3 P1;
                             [ProtoMember(23)] public Vector4 Color;
+                            [ProtoMember(24)] public uint DelayBetweenSpawnsOffset;
                         }
                         [ProtoContract]
                         public struct Trail
@@ -1062,10 +1063,11 @@ namespace Scripts
                             [ProtoMember(9)] public float MinViewDistance;
                             [ProtoMember(10)] public float MaxViewDistance;
                             [ProtoMember(11)] public LineDef.FactionColor FactionColor;
-                            [ProtoMember(12)] public BlendTypeEnum BlendType;
+                            [ProtoMember(12)] public VRageRender.MyBillboard.BlendTypeEnum BlendType;
                             [ProtoMember(13)] public string[] Materials;
                             [ProtoMember(14)] public Vector3 P0;
                             [ProtoMember(15)] public Vector4 Color;
+                            [ProtoMember(16)] public uint DelayBetweenSpawnsOffset;
                         }
                         [ProtoContract]
                         public struct Billboard
@@ -1074,13 +1076,15 @@ namespace Scripts
                             [ProtoMember(2)] public float MinViewDistance;
                             [ProtoMember(3)] public float MaxViewDistance;
                             [ProtoMember(4)] public LineDef.FactionColor FactionColor;
-                            [ProtoMember(5)] public BlendTypeEnum BlendType;
+                            [ProtoMember(5)] public VRageRender.MyBillboard.BlendTypeEnum BlendType;
                             [ProtoMember(6)] public string[] Materials;
                             [ProtoMember(7)] public Vector3 P0;
                             [ProtoMember(8)] public Vector3 P1;
                             [ProtoMember(9)] public Vector3 P2;
                             [ProtoMember(10)] public Vector3 P3; // P2 == P3 for triangle
                             [ProtoMember(11)] public Vector4 Color;
+                            [ProtoMember(12)] public uint DelayBetweenSpawns;
+                            [ProtoMember(13)] public uint DelayBetweenSpawnsOffset;
                         }
                     }
                 }

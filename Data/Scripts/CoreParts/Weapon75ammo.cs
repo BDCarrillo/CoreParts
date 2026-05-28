@@ -858,6 +858,10 @@ namespace Scripts
                             // (ie. if a TimeRendered = 120 line isn't scheduled then it will never appear. If it is just offscreen culled then looking back will be as if it was always there)
                             // You can use these to make a crude LOD system
                             DelayBetweenSpawns = 0, // Number of ticks between a new line being drawn. 0 means every tick, 1 means every other, etc.
+                            DelayBetweenSpawnsOffset = 0, // Offset the delay between spawns counter by this amount.
+                                                          // For example, if DelayBetweenSpawns = 2. in ticks normally would Spawn, Skip, Skip, Spawn, etc.
+                                                          // If DelayBetweenSpawnsOffset = 1 then in ticks it wouldbe Skip, Skip, Spawn, Skip, Skip, Spawn, etc.
+                                                          // If DelayBetweenSpawnsOffset = 2 then in ticks it wouldbe Skip, Spawn, Skip, Skip, Spawn, Skip, etc.
                             TimeRendered = 1, // In Ticks. 1 = 1 line generated per projectile, 33 is 33 lines drawn per projectile per line. Keep this number low. If this is zero it defaults to 1
 
                             OnlyDrawIfAccelerationAligned = false, // If true, then the line will only be drawn/scheduled if the projectile's acceleration dotted with the line direction is above the below value (P1 - P0)
@@ -918,6 +922,10 @@ namespace Scripts
                                                     // When a new line is not being drawn, the previous trail line will be extended to the new projectile position
                                                     // Use when possible, especially for unguided projectiles with straight trails
                                                     // For best results, keep DelayBetweenSpawns + 1 a clean multiple of TimeRendered (in this case a value of 1+1=2 divides 10 evenly into 5 lines
+                            DelayBetweenSpawnsOffset = 0, // Offset the delay between spawns counter by this amount.
+                                                          // For example, if DelayBetweenSpawns = 2. in ticks normally would Spawn, Skip, Skip, Spawn, etc.
+                                                          // If DelayBetweenSpawnsOffset = 1 then in ticks it wouldbe Skip, Skip, Spawn, Skip, Skip, Spawn, etc.
+                                                          // If DelayBetweenSpawnsOffset = 2 then in ticks it wouldbe Skip, Spawn, Skip, Skip, Spawn, Skip, etc.
                             TimeRendered = 10, // In Ticks. 1 = 1 line generated per projectile, 33 is 33 lines drawn per projectile per trail. Keep this number low, although it can be offset with DelayBetweenSpawns. If this is zero it defaults to 1
 
                             RotateSpeed = 0f, // Rotates the definition's positions around the Z axis (forward) counter clock wise by this amount in degrees per second.
@@ -958,6 +966,12 @@ namespace Scripts
                             Materials = new[] { // Material texture of the given billboard. Progresses from top to bottom
                                 "MaterialSquare",
                             },
+
+                            DelayBetweenSpawns = 0, // Number of ticks between each billboard being drawn. 0 means every tick, 1 means every other, etc.
+                            DelayBetweenSpawnsOffset = 0, // Offset the delay between spawns counter by this amount.
+                                                          // For example, if DelayBetweenSpawns = 2. in ticks normally would Spawn, Skip, Skip, Spawn, etc.
+                                                          // If DelayBetweenSpawnsOffset = 1 then in ticks it wouldbe Skip, Skip, Spawn, Skip, Skip, Spawn, etc.
+                                                          // If DelayBetweenSpawnsOffset = 2 then in ticks it wouldbe Skip, Spawn, Skip, Skip, Spawn, Skip, etc.
 
                             MinViewDistance = 0f, // If greater than zero, then the billboard will not be drawn, if the distance between the current camera position and the PROJECTILE position is less than this
                             MaxViewDistance = 0f, // If greater than zero, then the billboard will not be drawn, if the distance between the current camera position and the PROJECTILE position is greater than this
