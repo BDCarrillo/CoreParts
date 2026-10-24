@@ -13,6 +13,7 @@ using static Scripts.Structure.WeaponDefinition.HardPointDef.HardwareDef;
 using static Scripts.Structure.WeaponDefinition.HardPointDef.HardwareDef.HardwareType;
 using static Scripts.Structure.WeaponDefinition.HardPointDef.LoadingDef;
 using static Scripts.Structure.WeaponDefinition.HardPointDef.UiDef;
+using static Scripts.Structure.WeaponDefinition.TargetingDef.ControlModes;
 
 namespace Scripts {
     partial class Parts {
@@ -24,10 +25,10 @@ namespace Scripts {
                 MountPoints = new[] {
                     new MountPointDef {
                         SubtypeId = "PDCTurretLB", // Block Subtypeid. Your Cubeblocks contain this information
-                        SpinPartId = "Boomsticks", // For weapons with a spinning barrel such as Gatling Guns. Subpart_Boomsticks must be written as Boomsticks.
-                        MuzzlePartId = "Boomsticks", // The subpart where your muzzle empties are located. This is often the elevation subpart. Subpart_Boomsticks must be written as Boomsticks.
-                        AzimuthPartId = "None", // Your Rotating Subpart, the bit that moves sideways.
-                        ElevationPartId = "None",// Your Elevating Subpart, that bit that moves up.
+                        SpinPartId = "Boomsticks", // For weapons with a spinning barrel such as Gatling Guns. subpart_Boomsticks must be written as Boomsticks.
+                        MuzzlePartId = "Boomsticks", // Not the muzzle itself, but the subpart where your muzzle empties are located. This is often the elevation subpart. subpart_Elevation must be written as Elevation. Case sensitive!  Must match your subpart name in Blender.
+                        AzimuthPartId = "None", // Your Rotating Subpart, the bit that moves sideways. subpart_Azimuth must be written as Azimuth.  Case sensitive!  Must match your subpart name in Blender.
+                        ElevationPartId = "None",// Your Elevating Subpart, that bit that moves up. subpart_Elevation must be written as Elevation.  Case sensitive!  Must match your subpart name in Blender.
                         DurabilityMod = 0.25f, // GeneralDamageMultiplier, 0.25f = 25% damage taken.
                         IconName = "TestIcon.dds" // Overlay for block inventory slots, like reactors, refineries, etc.
                         // if IconName is just a file name, WC will look in mod root folder\Textures\GUI\Icons for it
@@ -84,6 +85,15 @@ namespace Scripts {
                 SubSystems = new[] {
                     Thrust, Utility, Offense, Power, Production, Any, // Subsystem targeting priority: Offense, Utility, Power, Production, Thrust, Jumping, Steering, Any
                                                                       // Order matters! With the current setting weapons will target Thrust first, then Utility, then Offense, etc.
+                },
+                // Determines what control modes the weapon can be in, if it is a turret/fires smart projectiles.
+                // Usually good to keep all 3 unless you have good reason to limit it. Painter can be force disabled via server settings independent of this.
+                // Note: You need to have at-least one of these here w/o removing this entire block if you want your mod to compile. If removed, defaults to all three.
+                ValidControlModes = new[]
+                {
+                    Automatic, // Turret/smarts aims and fires at targets automatically
+                    Manual, // Turret/smarts follows the user's WC cursor/camera aim
+                    Painter // Turret/smarts follows the user's paint mark. If this is the only setting and painter is disabled via server settings, this defaults back to automatic.
                 },
                 ClosestFirst = true, // Tries to pick closest targets first (blocks on grids, projectiles, etc...).
                 IgnoreDumbProjectiles = false,  // Don't fire at non-smart projectiles. If you're using projectile tags, ensure this is set to false as this overwrites the newer system
@@ -209,7 +219,6 @@ namespace Scripts {
                     InventorySize = 1f, // Inventory capacity in kL.
                     FixedInventorySize = false, // If true, the inventory size will be forced to the exact value specified above regardless of world inventory multipliers
                     IdlePower = 0.25f, // Constant base power draw in MW.
-                    FixedOffset = false, // Deprecated.
                     Offset = Vector(x: 0, y: 0, z: 0), // Offsets the aiming/firing line of the weapon, in metres.
                     Type = BlockWeapon, // What type of weapon this is; BlockWeapon, HandWeapon, Phantom 
                     CriticalReaction = new CriticalDef
@@ -226,8 +235,6 @@ namespace Scripts {
                 {
                     ConstructPartCap = 0, // Maximum number of blocks with this weapon on a grid; 0 = unlimited.
                     RotateBarrelAxis = 0, // For spinning barrels, which axis to spin the barrel around; 0 = none.
-                    EnergyPriority = 0, // Deprecated.
-                    MuzzleCheck = false, // Whether the weapon should check LOS from each individual muzzle in addition to the scope.
                     AllowScopeOutsideObb = false, // If true, the actual scope position will be used regardless if it is outside the bounds of the weapon block.  If false (default) the ray origin will be adjusted to be inside the bounds.
                     DisableLosCheck = false, // Do not perform LOS checks at all (except against its own grid)
                     DisableOwnGridLosCheck = false, // If true, this weapon will not perform LOS checks against its own grid.

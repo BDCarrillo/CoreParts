@@ -336,6 +336,16 @@ namespace Scripts
                 [ProtoMember(26)] internal bool AdvancedFireDistribution;
                 [ProtoMember(27)] internal string[] ProjectileTagsList;
                 [ProtoMember(28)] internal WhitelistSystem ProjectileTagsMeaning;
+                [ProtoMember(29)] internal ControlModes[] ValidControlModes;
+
+                [Flags]
+                public enum ControlModes : uint
+                {
+                    Invalid = 0,
+                    Automatic = 1,
+                    Manual = 2,
+                    Painter = 4
+                }
 
                 [ProtoContract]
                 public struct CommunicationDef
@@ -642,7 +652,7 @@ namespace Scripts
                     [ProtoMember(1)] internal float RotateRate;
                     [ProtoMember(2)] internal float ElevateRate;
                     [ProtoMember(3)] internal Vector3D Offset;
-                    [ProtoMember(4)] internal bool FixedOffset;
+                    [ProtoMember(4)] internal bool FixedOffset; //Deprecated
                     [ProtoMember(5)] internal int MaxAzimuth;
                     [ProtoMember(6)] internal int MinAzimuth;
                     [ProtoMember(7)] internal int MaxElevation;
@@ -684,9 +694,9 @@ namespace Scripts
                 public struct OtherDef
                 {
                     [ProtoMember(1)] internal int ConstructPartCap;
-                    [ProtoMember(2)] internal int EnergyPriority;
+                    [ProtoMember(2)] internal int EnergyPriority; //Deprecated
                     [ProtoMember(3)] internal int RotateBarrelAxis;
-                    [ProtoMember(4)] internal bool MuzzleCheck;
+                    [ProtoMember(4)] internal bool MuzzleCheck; //Deprecated
                     [ProtoMember(5)] internal bool Debug;
                     [ProtoMember(6)] internal double RestrictionRadius;
                     [ProtoMember(7)] internal bool CheckInflatedBox;
